@@ -20,8 +20,19 @@ namespace DonsIOCContainer
                 return;
             }
 
-            _registeredObjects.Add(new RegisteredObject(typeof(TTypeToResolve), typeof(TConcrete), lifeCycle));
-            _registeredObjects.Add(new RegisteredObject(typeof(TConcrete), typeof(TConcrete), lifeCycle));
+            switch (lifeCycle)
+            {
+                case Lifetime.Transient:
+                    _registeredObjects.Add(new TransientRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
+                    _registeredObjects.Add(new TransientRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
+                    break;
+                case Lifetime.Singleton:
+                    _registeredObjects.Add(new SingletonRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
+                    _registeredObjects.Add(new SingletonRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(lifeCycle), lifeCycle, null);
+            }
         }
 
         public TTypeToResolve Resolve<TTypeToResolve>()
@@ -47,20 +58,18 @@ namespace DonsIOCContainer
 
         private object GetInstance(RegisteredObject registeredObject)
         {
-            if (registeredObject.Instance != null && registeredObject.Lifetime != Lifetime.Transient)
-            {
-                return registeredObject.Instance;
-            }
-
             var parameters = ResolveConstructorParams(registeredObject);
-            registeredObject.CreateInstance(parameters.ToArray());
-            return registeredObject.Instance;
+            return registeredObject.GetInstance(parameters.ToArray());
         }
 
         private IEnumerable<object> ResolveConstructorParams(RegisteredObject registeredObject)
         {
             // Try to get the greediest constructor
-            var constructorInfo = registeredObject.ConcreteType.GetConstructors().OrderByDescending(c => c.GetParameters().Length).First();
+            var constructorInfo = registeredObject.ConcreteType.GetConstructors().OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
+            if (constructorInfo == null)
+            {
+                yield return new List<object>();
+            }
 
             foreach (var parameter in constructorInfo.GetParameters())
             {

@@ -2,9 +2,9 @@
 
 namespace DonsIOCContainer
 {
-    public class RegisteredObject
+    public abstract class RegisteredObject
     {
-        public RegisteredObject(Type typeToResolve, Type concreteType, Lifetime lifetime)
+        protected RegisteredObject(Type typeToResolve, Type concreteType, Lifetime lifetime)
         {
             TypeToResolve = typeToResolve;
             ConcreteType = concreteType;
@@ -19,9 +19,41 @@ namespace DonsIOCContainer
 
         public Lifetime Lifetime { get; private set; }
 
-        public void CreateInstance(params object[] args)
+        public virtual void CreateInstance(params object[] args)
         {
-            Instance = Activator.CreateInstance(this.ConcreteType, args);
+            Instance = Activator.CreateInstance(ConcreteType, args);
+        }
+
+        public abstract object GetInstance(params object[] args);
+    }
+
+    public class SingletonRegisteredObject : RegisteredObject
+    {
+        public SingletonRegisteredObject(Type typeToResolve, Type concreteType) : base(typeToResolve, concreteType, Lifetime.Singleton)
+        {
+        }
+        
+        public override object GetInstance(params object[] args)
+        {
+            if (Instance == null)
+            {
+                CreateInstance(args);
+            }
+
+            return Instance;
+        }
+    }
+
+    public class TransientRegisteredObject : RegisteredObject
+    {
+        public TransientRegisteredObject(Type typeToResolve, Type concreteType) : base(typeToResolve, concreteType, Lifetime.Transient)
+        {
+        }
+
+        public override object GetInstance(params object[] args)
+        {
+            CreateInstance(args);
+            return Instance;
         }
     }
 }
