@@ -34,7 +34,7 @@ namespace DonsIOCContainer.Tests
         [Fact]
         public void IsRegistered_ShouldBeTrue_WhenTypeIsRegistered()
         {
-
+            
         }
     }
 
