@@ -57,5 +57,27 @@ namespace DonsIOCContainer.Tests
         {
             Assert.Throws<TypeNotRegisteredException>(() => new IocContainer().Resolve<IDummyInterface>());
         }
+
+        [Fact]
+        public void Resolve_ShouldReturnConcreteTypeForInterface()
+        {
+            var container = new IocContainer();
+            container.Register<IDummyInterface, DummyImplementation>();
+
+            var impl = container.Resolve<IDummyInterface>();
+
+            Assert.IsType<DummyImplementation>(impl);
+        }
+
+        [Fact]
+        public void Resolve_ShouldReturnConcreteTypeForSelf()
+        {
+            var container = new IocContainer();
+            container.Register<IDummyInterface, DummyImplementation>();
+
+            var impl = container.Resolve<DummyImplementation>();
+
+            Assert.IsType<DummyImplementation>(impl);
+        }
     }
 }
