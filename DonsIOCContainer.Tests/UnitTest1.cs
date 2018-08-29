@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace DonsIOCContainer.Tests
@@ -13,6 +14,10 @@ namespace DonsIOCContainer.Tests
             container.Register<IDummyInterface, DummyImplementation>();
 
             var impl = container.Resolve<DummyImplementation>();
+
+            var hello = impl.SayHello();
+
+            Assert.Equal("Hello!", hello);
         }
 
         [Fact]
@@ -57,9 +62,19 @@ namespace DonsIOCContainer.Tests
             }
         }
 
-        public T Resolve<T>()
+        public TInterface Resolve<TInterface>()
         {
-            throw new NotImplementedException();
+            if (!IsRegistered<TInterface>())
+            {
+                throw new Exception($"Type {typeof(TInterface).FullName} is not registered.");
+            }
+
+            var implementation = _registrations[typeof(TInterface)];
+
+            // TODO: Build instance with constructor parameters
+            var instance = Activator.CreateInstance(implementation);
+
+            return (TInterface)instance;
         }
     }
 }
