@@ -58,17 +58,4 @@ namespace DonsIOCContainer.Tests
             Assert.Throws<TypeNotRegisteredException>(() => new IocContainer().Resolve<IDummyInterface>());
         }
     }
-
-    public class DummyImplementation : IDummyInterface
-    {
-        public string SayHello()
-        {
-            return "Hello!";
-        }
-    }
-
-    public interface IDummyInterface
-    {
-        string SayHello();
-    }
 }

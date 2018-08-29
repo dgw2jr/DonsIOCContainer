@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="DummyImplementation.cs" />
+    <Compile Include="IDummyInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
