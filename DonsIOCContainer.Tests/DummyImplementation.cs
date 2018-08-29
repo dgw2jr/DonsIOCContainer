@@ -6,5 +6,7 @@
         {
             return "Hello!";
         }
+
+        public string State { get; set; }
     }
 }

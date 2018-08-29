@@ -5,6 +5,34 @@ namespace DonsIOCContainer.Tests
     public class ContainerTests
     {
         [Fact]
+        public void Register_ShouldRegisterTypeWithSingletonLifetime()
+        {
+            var container = new IocContainer();
+            container.Register<IDummyInterface, DummyImplementation>(Lifetime.Singleton);
+
+            var instance = container.Resolve<IDummyInterface>();
+            instance.State = "State 1";
+
+            var instanceAgain = container.Resolve<IDummyInterface>();
+
+            Assert.Equal("State 1", instanceAgain.State);
+        }
+
+        [Fact]
+        public void Register_ShouldRegisterTypeWithTransientLifetime()
+        {
+            var container = new IocContainer();
+            container.Register<IDummyInterface, DummyImplementation>(Lifetime.Transient);
+
+            var instance = container.Resolve<IDummyInterface>();
+            instance.State = "State 1";
+
+            var instanceAgain = container.Resolve<IDummyInterface>();
+
+            Assert.Null(instanceAgain.State);
+        }
+
+        [Fact]
         public void Register_ShouldRegisterTypeAsItself()
         {
             var container = new IocContainer();

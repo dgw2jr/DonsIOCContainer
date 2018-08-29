@@ -13,14 +13,14 @@ namespace DonsIOCContainer
             Register<TTypeToResolve, TConcrete>(Lifetime.Singleton);
         }
 
-        public void Register<TTypeToResolve, TConcrete>(Lifetime lifeCycle)
+        public void Register<TTypeToResolve, TConcrete>(Lifetime lifetime)
         {
             if (IsRegistered<TTypeToResolve>())
             {
                 return;
             }
 
-            switch (lifeCycle)
+            switch (lifetime)
             {
                 case Lifetime.Transient:
                     _registeredObjects.Add(new TransientRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
@@ -31,7 +31,7 @@ namespace DonsIOCContainer
                     _registeredObjects.Add(new SingletonRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(lifeCycle), lifeCycle, null);
+                    throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
             }
         }
 
