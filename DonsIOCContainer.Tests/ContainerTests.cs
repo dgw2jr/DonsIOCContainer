@@ -34,7 +34,23 @@ namespace DonsIOCContainer.Tests
         [Fact]
         public void IsRegistered_ShouldBeTrue_WhenTypeIsRegistered()
         {
+            var container = new IocContainer();
+
+            container.Register<IDummyInterface, DummyImplementation>();
+
+            var result = container.IsRegistered<IDummyInterface>();
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsRegistered_ShouldBeFalse_WhenTypeIsNotRegistered()
+        {
+            var container = new IocContainer();
             
+            var result = container.IsRegistered<IDummyInterface>();
+
+            Assert.False(result);
         }
     }
 
