@@ -1,43 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DonsIOCContainer
 {
     public class IocContainer
     {
-        private readonly Dictionary<Type, Type> _registrations = new Dictionary<Type, Type>();
+        private readonly List<RegisteredObject> _registeredObjects = new List<RegisteredObject>();
 
-        public bool IsRegistered<TType>()
+        public void Register<TTypeToResolve, TConcrete>()
         {
-            return _registrations.ContainsKey(typeof(TType));
+            Register<TTypeToResolve, TConcrete>(Lifetime.Singleton);
         }
 
-        public void Register<TInterface, TImpl>() where TImpl : class, TInterface
+        public void Register<TTypeToResolve, TConcrete>(Lifetime lifeCycle)
         {
-            if (!IsRegistered<TInterface>())
+            if (IsRegistered<TTypeToResolve>())
             {
-                _registrations.Add(typeof(TInterface), typeof(TImpl));
+                return;
+
             }
 
-            if (!IsRegistered<TImpl>())
+            _registeredObjects.Add(new RegisteredObject(typeof(TTypeToResolve), typeof(TConcrete), lifeCycle));
+            _registeredObjects.Add(new RegisteredObject(typeof(TConcrete), typeof(TConcrete), lifeCycle));
+        }
+
+        public TTypeToResolve Resolve<TTypeToResolve>()
+        {
+            return (TTypeToResolve)ResolveObject(typeof(TTypeToResolve));
+        }
+        
+        private object ResolveObject(Type typeToResolve)
+        {
+            var registeredObject = _registeredObjects.FirstOrDefault(o => o.TypeToResolve == typeToResolve);
+            if (registeredObject == null)
             {
-                _registrations.Add(typeof(TImpl), typeof(TImpl));
+                throw new TypeNotRegisteredException($"The type {typeToResolve.Name} has not been registered.");
+            }
+
+            return GetInstance(registeredObject);
+        }
+
+        private object GetInstance(RegisteredObject registeredObject)
+        {
+            if (registeredObject.Instance != null && registeredObject.Lifetime != Lifetime.Transient)
+            {
+                return registeredObject.Instance;
+            }
+
+            var parameters = ResolveConstructorParams(registeredObject);
+            registeredObject.CreateInstance(parameters.ToArray());
+            return registeredObject.Instance;
+        }
+
+        private IEnumerable<object> ResolveConstructorParams(RegisteredObject registeredObject)
+        {
+            // Try to get the greediest constructor
+            var constructorInfo = registeredObject.ConcreteType.GetConstructors().OrderByDescending(c => c.GetParameters().Length).First();
+
+            foreach (var parameter in constructorInfo.GetParameters())
+            {
+                yield return ResolveObject(parameter.ParameterType);
             }
         }
 
-        public TInterface Resolve<TInterface>()
+        public bool IsRegistered<T>()
         {
-            if (!IsRegistered<TInterface>())
-            {
-                throw new Exception($"Type {typeof(TInterface).FullName} is not registered.");
-            }
-
-            var implementation = _registrations[typeof(TInterface)];
-
-            // TODO: Build instance with constructor parameters
-            var instance = Activator.CreateInstance(implementation);
-
-            return (TInterface)instance;
+            return _registeredObjects.Any(r => r.TypeToResolve == typeof(T));
         }
     }
 }

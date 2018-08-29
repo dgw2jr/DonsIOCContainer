@@ -51,6 +51,12 @@ namespace DonsIOCContainer.Tests
 
             Assert.False(result);
         }
+
+        [Fact]
+        public void Resolve_ShouldThrowException_WhenTypeIsNotRegistered()
+        {
+            Assert.Throws<TypeNotRegisteredException>(() => new IocContainer().Resolve<IDummyInterface>());
+        }
     }
 
     public class DummyImplementation : IDummyInterface
