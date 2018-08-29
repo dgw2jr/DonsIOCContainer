@@ -18,7 +18,6 @@ namespace DonsIOCContainer
             if (IsRegistered<TTypeToResolve>())
             {
                 return;
-
             }
 
             _registeredObjects.Add(new RegisteredObject(typeof(TTypeToResolve), typeof(TConcrete), lifeCycle));
@@ -29,7 +28,12 @@ namespace DonsIOCContainer
         {
             return (TTypeToResolve)ResolveObject(typeof(TTypeToResolve));
         }
-        
+
+        public object Resolve(Type typeToResolve)
+        {
+            return ResolveObject(typeToResolve);
+        }
+
         private object ResolveObject(Type typeToResolve)
         {
             var registeredObject = _registeredObjects.FirstOrDefault(o => o.TypeToResolve == typeToResolve);
