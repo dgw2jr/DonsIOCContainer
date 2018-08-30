@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using HelloDependencyInjection.Models;
 
 namespace HelloDependencyInjection.Services
 {
     public class EmailService : IEmailService
     {
-        public string Create(string toAddress, string fromAddress, string subject, string body)
+        public EmailContentViewModel Create(string toAddress, string fromAddress, string subject, string body)
         {
-            return $"Dear {toAddress}, {body}{Environment.NewLine} Sincerely, {fromAddress}";
+            var result = new EmailContentViewModel
+            {
+                Content = body,
+                To = toAddress,
+                From = fromAddress,
+                Subject = subject
+            };
+
+            return result;
         }
     }
 }

@@ -7,18 +7,19 @@ namespace HelloDependencyInjection.Controllers
     public class HomeController : Controller
     {
         private readonly IEmailService _emailService;
+        private readonly IDateTimeService _dateTimeService;
 
-        public HomeController(IEmailService emailService)
+        public HomeController(IEmailService emailService, IDateTimeService dateTimeService)
         {
             _emailService = emailService;
+            _dateTimeService = dateTimeService;
         }
 
         public ActionResult Index()
         {
-            var model = new EmailContentViewModel
-            {
-                Content = _emailService.Create("jeff@jeffsdomain.com", "geoff@geoffsdomain.com", "Spelling", "Your name is spelled wrong...")
-            };
+            var model = _emailService.Create("jeff@jeffsdomain.com", "geoff@geoffsdomain.com", "The Spelling Of Your Name",
+                "Your name is spelled wrong...");
+            model.DateTime = _dateTimeService.Date;
 
             return View(model);
         }

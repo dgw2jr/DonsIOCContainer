@@ -1,7 +1,9 @@
-﻿namespace HelloDependencyInjection.Services
+﻿using HelloDependencyInjection.Models;
+
+namespace HelloDependencyInjection.Services
 {
     public interface IEmailService
     {
-        string Create(string toAddress, string fromAddress, string subject, string body);
+        EmailContentViewModel Create(string toAddress, string fromAddress, string subject, string body);
     }
 }

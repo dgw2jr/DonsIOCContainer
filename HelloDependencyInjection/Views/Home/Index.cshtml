@@ -4,7 +4,17 @@
     ViewBag.Title = "Home Page";
 }
 
-<div>Email Content</div>
+<div>@Model.DateTime</div><br/>
+
+<div>Dear @Model.To,</div><br/>
+
+<div>Regarding @Model.Subject</div><br/>
+
 <div>
     @Model.Content
+</div>
+<br/>
+<div>
+    Sincerely,<br/>
+    @Model.From
 </div>
