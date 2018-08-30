@@ -20,19 +20,24 @@ namespace DonsIOCContainer
                 return;
             }
 
-            switch (lifetime)
-            {
-                case Lifetime.Transient:
-                    _registeredObjects.Add(new TransientRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
-                    _registeredObjects.Add(new TransientRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
-                    break;
-                case Lifetime.Singleton:
-                    _registeredObjects.Add(new SingletonRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
-                    _registeredObjects.Add(new SingletonRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
-            }
+            var registeredObjectForInterface = RegisteredObjectFactory.Create<TTypeToResolve, TConcrete>(lifetime);
+            var registeredObjectForConcrete = RegisteredObjectFactory.Create<TConcrete, TConcrete>(lifetime);
+            _registeredObjects.Add(registeredObjectForInterface);
+            _registeredObjects.Add(registeredObjectForConcrete);
+
+            //switch (lifetime)
+            //{
+            //    case Lifetime.Transient:
+            //        _registeredObjects.Add(new TransientRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
+            //        _registeredObjects.Add(new TransientRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
+            //        break;
+            //    case Lifetime.Singleton:
+            //        _registeredObjects.Add(new SingletonRegisteredObject(typeof(TTypeToResolve), typeof(TConcrete)));
+            //        _registeredObjects.Add(new SingletonRegisteredObject(typeof(TConcrete), typeof(TConcrete)));
+            //        break;
+            //    default:
+            //        throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
+            //}
         }
 
         public TTypeToResolve Resolve<TTypeToResolve>()
