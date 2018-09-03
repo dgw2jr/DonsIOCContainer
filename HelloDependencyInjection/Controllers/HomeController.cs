@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using HelloDependencyInjection.Models;
 using HelloDependencyInjection.Services;
 
@@ -27,9 +28,27 @@ namespace HelloDependencyInjection.Controllers
         [HttpPost]
         public ActionResult Index(EmailContentViewModel model)
         {
-            _emailService.Send(model);
+            var result = new SendEmailResult();
 
-            return View(new EmailContentViewModel());
+            try
+            {
+                _emailService.Send(model);
+
+                result.Result = "Email sent!";
+            }
+            catch (Exception e)
+            {
+                result.Result = $"Email failed to send: {e.Message}";
+            }
+
+            TempData["result"] = result;
+
+            return RedirectToAction("EmailResult");
+        }
+
+        public ActionResult EmailResult()
+        {
+            return View(TempData["result"] as SendEmailResult);
         }
 
         public ActionResult About()
