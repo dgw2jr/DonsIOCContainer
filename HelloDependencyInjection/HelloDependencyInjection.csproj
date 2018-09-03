@@ -158,6 +158,8 @@
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\IDateTimeService.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\ISmtpClientWrapper.cs" />
+    <Compile Include="Services\SmtpClientWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

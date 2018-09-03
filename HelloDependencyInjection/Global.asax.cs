@@ -22,6 +22,7 @@ namespace HelloDependencyInjection
             container.Register<HomeController, HomeController>();
             container.Register<IEmailService, EmailService>();
             container.Register<IDateTimeService, DateTimeService>(Lifetime.Singleton);
+            container.Register<ISmtpClientWrapper, SmtpClientWrapper>(Lifetime.Singleton);
 
             ControllerBuilder.Current.SetControllerFactory(new DonsIocControllerFactory(container));
         }

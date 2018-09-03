@@ -5,5 +5,7 @@ namespace HelloDependencyInjection.Services
     public interface IEmailService
     {
         EmailContentViewModel Create(string toAddress, string fromAddress, string subject, string body);
+
+        void Send(EmailContentViewModel content);
     }
 }

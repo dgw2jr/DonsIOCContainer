@@ -10,7 +10,7 @@ namespace DonsIOCContainer
 
         public void Register<TTypeToResolve, TConcrete>()
         {
-            Register<TTypeToResolve, TConcrete>(Lifetime.Singleton);
+            Register<TTypeToResolve, TConcrete>(Lifetime.Transient);
         }
 
         public void Register<TTypeToResolve, TConcrete>(Lifetime lifetime)

@@ -24,6 +24,14 @@ namespace HelloDependencyInjection.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult Index(EmailContentViewModel model)
+        {
+            _emailService.Send(model);
+
+            return View(new EmailContentViewModel());
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

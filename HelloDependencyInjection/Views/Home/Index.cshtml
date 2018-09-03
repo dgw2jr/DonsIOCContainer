@@ -4,17 +4,29 @@
     ViewBag.Title = "Home Page";
 }
 
-<div>@Model.DateTime</div><br/>
+<div>@Model.DateTime</div><br />
 
-<div>Dear @Model.To,</div><br/>
-
-<div>Regarding @Model.Subject</div><br/>
-
-<div>
-    @Model.Content
+@using (Html.BeginForm())
+{
+<div class="input-group">
+    <span class="input-group-addon">@Html.LabelFor(model => model.From)</span>
+    @Html.TextBoxFor(m => m.From, new { @class = "form-control" })
 </div>
-<br/>
-<div>
-    Sincerely,<br/>
-    @Model.From
+
+<div class="input-group">
+    <span class="input-group-addon">@Html.LabelFor(model => model.To)</span>
+    @Html.TextBoxFor(m => m.To, new { @class = "form-control" })
 </div>
+
+<div class="input-group">
+    <span class="input-group-addon">@Html.LabelFor(model => model.Subject)</span>
+    @Html.TextBoxFor(m => m.Subject, new { @class = "form-control" })
+</div>
+
+<div class="input-group">
+    <span class="input-group-addon">@Html.LabelFor(model => model.Content)</span>
+    @Html.TextAreaFor(m => m.Content, new { @class = "form-control" })
+</div>
+
+<input type="submit" value="Send" />
+}
